@@ -1,7 +1,8 @@
-(() => {
+(async () => {
   'use strict';
+  await window.LAB_READY;
   const esc = s => String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const safeURL = s => /^(https?:\/\/|mailto:|tel:|data:image\/(png|jpeg|webp|gif);base64,|assets\/)/i.test(String(s)) ? esc(s) : '';
+  const safeURL = s => /^(https?:\/\/|mailto:|tel:|data:image\/(png|jpeg|webp|gif);base64,|assets\/|media\/)/i.test(String(s)) ? esc(String(s).startsWith('media/') && window.LAB_MEDIA_BASE ? window.LAB_MEDIA_BASE + s : s) : '';
   const nl = s => esc(s).replace(/\n/g,'<br>');
   const params = new URLSearchParams(location.search);
   let d = window.LAB_DATA;
@@ -19,9 +20,9 @@
   const mail = ()=>`mailto:${esc(d.contact.email)}`;
   if (/^#[0-9a-f]{6}$/i.test(d.site.accent)) document.documentElement.style.setProperty('--accent',d.site.accent);
   document.title=(page==='home'?'':page==='professor'?`${d.professor.name} ${d.professor.title} · `:page==='research'?'연구분야 · ':'Contact · ')+d.site.name;
-  if(isDraft) document.getElementById('draft-banner').innerHTML=`<div class="draft-banner">내 브라우저에서 수정본 미리보기 중 <a href="${location.pathname}">원본 보기</a><a href="editor.html">편집 화면으로</a></div>`;
+  if(isDraft) document.getElementById('draft-banner').innerHTML=`<div class="draft-banner">편집 미리보기 · 변경 내용 자동 저장 <a href="${location.pathname}">실제 홈페이지 보기</a><a href="editor.html">편집 화면으로</a></div>`;
   document.getElementById('header').innerHTML=`<div class="utility"><div class="container"><span>${esc(d.site.university)} <span class="utility-dept">${esc(d.site.department)}</span></span><span>Crop science, connected.</span></div></div><div class="container nav-wrap"><a class="brand" href="${link('index.html')}" aria-label="${esc(d.site.name)} 홈">${plant}<span><strong>${esc(d.site.name)}</strong><small>${esc(d.site.nameEn)}</small></span></a><button class="menu-toggle" aria-expanded="false" aria-controls="main-nav"><span></span><span></span><span class="sr-only">메뉴 열기</span></button><nav id="main-nav" aria-label="주 메뉴">${[['home','index.html','연구실 소개'],['research','research.html','연구분야'],['professor','professor.html','지도교수'],['contact','contact.html','Contact']].map(([id,url,label])=>`<a href="${link(url)}" ${page===id?'aria-current="page"':''}>${label}${id==='contact'?arrow:''}</a>`).join('')}</nav></div>`;
-  document.getElementById('footer').innerHTML=`<div class="container footer-main"><a href="${link('index.html')}" class="brand">${plant}<span><strong>${esc(d.site.name)}</strong><small>${esc(d.site.nameEn)}</small></span></a><div><p>${esc(d.site.university)} ${esc(d.site.department)}</p><a href="${mail()}">${esc(d.contact.email)}</a><span class="footer-dot">·</span><a href="tel:${esc(d.contact.phone)}">${esc(d.contact.phone)}</a></div></div><div class="container footer-bottom"><span>© ${new Date().getFullYear()} ${esc(d.site.shortName)}. All rights reserved.</span><div><a href="guide.html">홈페이지 시작 가이드 ${arrow}</a><a href="editor.html">콘텐츠 편집 ${arrow}</a></div></div>`;
+  document.getElementById('footer').innerHTML=`<div class="container footer-main"><a href="${link('index.html')}" class="brand">${plant}<span><strong>${esc(d.site.name)}</strong><small>${esc(d.site.nameEn)}</small></span></a><div><p>${esc(d.site.university)} ${esc(d.site.department)}</p><a href="${mail()}">${esc(d.contact.email)}</a><span class="footer-dot">·</span><a href="tel:${esc(d.contact.phone)}">${esc(d.contact.phone)}</a></div></div><div class="container footer-bottom"><span>© ${new Date().getFullYear()} ${esc(d.site.shortName)}. All rights reserved.</span><div><a href="guide.html">편집 안내 ${arrow}</a><a href="editor.html">콘텐츠 편집 ${arrow}</a></div></div>`;
   const cropStrip = ()=>`<div class="crop-strip">${d.crops.map((c,i)=>`<div><span class="index">0${i+1}</span><strong>${esc(c.name)}</strong><em>${esc(c.latin)}</em></div>`).join('')}<span class="crop-caption">OUR CROPS / 우리의 연구 대상</span></div>`;
   const contactBand = ()=>`<section class="contact-band"><div class="container"><div><p class="eyebrow">LET’S CONNECT</p><h2>연구의 다음 가능성,<br>함께 만들어 갑니다.</h2></div><div><p>${esc(d.contact.message)}</p><a href="${mail()}" class="email-link">${esc(d.contact.email)} ${arrow}</a></div></div></section>`;
   const main=document.getElementById('main');
@@ -47,5 +48,11 @@
   document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>{b.classList.toggle('active',b===btn);b.setAttribute('aria-pressed',String(b===btn));});document.querySelectorAll('[data-research]').forEach(el=>{el.hidden=btn.dataset.filter!=='all'&&el.dataset.research!==btn.dataset.filter;});document.getElementById('filter-count').textContent=`${document.querySelectorAll('[data-research]:not([hidden])').length}개의 연구분야`;}));
   const dialog=document.getElementById('image-dialog');
   if(dialog){document.querySelectorAll('.image-open').forEach(btn=>btn.addEventListener('click',()=>{const im=dialog.querySelector('img');im.src=btn.dataset.image;im.alt=btn.dataset.caption;dialog.querySelector('p').textContent=btn.dataset.caption;dialog.showModal();}));dialog.querySelector('button').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});}
+  if(!isDraft && location.protocol !== 'file:') {
+    let checking=false;
+    const refresh=async()=>{if(checking||document.hidden)return;checking=true;try{const r=await fetch(window.LAB_CONTENT_URL || 'api/content',{cache:'no-store',signal:AbortSignal.timeout(6000),credentials:'omit'});if(r.ok){const v=await r.json();if(v.revision!==window.LAB_REVISION){try{sessionStorage.setItem('cgbl-scroll',String(scrollY));}catch(_){}location.reload();}}}catch(_){}finally{checking=false;}};
+    setInterval(refresh,5000);window.addEventListener('focus',refresh);
+    try{const y=sessionStorage.getItem('cgbl-scroll');if(y!==null){sessionStorage.removeItem('cgbl-scroll');requestAnimationFrame(()=>scrollTo(0,Number(y)));}}catch(_){}
+  }
   if(location.hash){requestAnimationFrame(()=>document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView());}
 })();
