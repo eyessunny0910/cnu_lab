@@ -1,7 +1,16 @@
 (function () {
   const fields = {
+    members: [
+      ['eyebrow','페이지 상단 · 작은 제목','OUR PEOPLE'],['title','페이지 상단 · 큰 제목','Members'],['description','페이지 소개문','','textarea'],['currentTitle','현재 구성원 제목','Current members'],['alumniTitle','졸업자 목록 제목','Alumni'],['empty','구성원이 없을 때 문구','구성원 정보를 준비하고 있습니다.'],['alumniEmpty','졸업자 목록이 비었을 때 문구','졸업자 정보를 준비하고 있습니다.'],['nameLabel','졸업자 표 · 이름','이름'],['roleLabel','졸업자 표 · 학위·직위','학위 · 직위'],['periodLabel','졸업자 표 · 졸업연도','졸업연도 · 재학 기간'],['affiliationLabel','졸업자 표 · 현재 소속','현재 소속']
+    ],
+    publications: [
+      ['eyebrow','페이지 상단 · 작은 제목','RESEARCH OUTPUT'],['title','페이지 상단 · 큰 제목','Publications'],['description','페이지 소개문','','textarea'],['profilesTitle','교수님 프로필 링크 영역 제목','Research profiles'],['searchPlaceholder','검색 칸 안내','논문 제목 · 저자 · 학술지 검색'],['searchLabel','검색 칸 이름','논문 검색'],['allYears','연도 필터 · 전체','전체 연도'],['yearLabel','연도 필터 이름','발표 연도'],['unknownYear','연도 미입력 묶음 제목','Other publications'],['empty','논문 목록이 비었을 때 문구','연구 논문 목록을 준비하고 있습니다.'],['noResults','검색 결과가 없을 때 문구','검색 조건에 맞는 논문이 없습니다.'],['doiLink','DOI 버튼 문구','DOI'],['paperLink','논문 링크 버튼 문구','논문 보기']
+    ],
+    gallery: [
+      ['eyebrow','페이지 상단 · 작은 제목','LAB LIFE'],['title','페이지 상단 · 큰 제목','Gallery'],['description','페이지 소개문','','textarea'],['allYears','연도 필터 · 전체','전체 연도'],['yearLabel','연도 필터 이름','활동 연도'],['empty','사진이 없을 때 문구','연구실의 활동 사진을 준비하고 있습니다.'],['noResults','해당 연도에 사진이 없을 때 문구','선택한 연도에 등록된 사진이 없습니다.']
+    ],
     common: [
-      ['utilityTagline','상단 오른쪽 문구','Crop science, connected.'],['navHome','메뉴 · 연구실 소개','연구실 소개'],['navResearch','메뉴 · 연구분야','연구분야'],['navProfessor','메뉴 · 지도교수','지도교수'],['navContact','메뉴 · 연락처','Contact'],['cropLabel','연구 작물 목록 아래 문구','OUR CROPS / 우리의 연구 대상'],
+      ['utilityTagline','상단 오른쪽 문구','Crop science, connected.'],['navHome','메뉴 · 연구실 소개','연구실 소개'],['navResearch','메뉴 · 연구분야','연구분야'],['navProfessor','메뉴 · 지도교수','지도교수'],['navMembers','메뉴 · 구성원','Members'],['navPublications','메뉴 · 논문','Publications'],['navGallery','메뉴 · 갤러리','Gallery'],['navContact','메뉴 · 연락처','Contact'],['cropLabel','연구 작물 목록 아래 문구','OUR CROPS / 우리의 연구 대상'],
       ['contactEyebrow','하단 문의 영역 · 작은 제목',''],['contactTitle','하단 문의 영역 · 큰 제목','','textarea'],['copyright','저작권 안내 문구','All rights reserved.'],['guideLink','하단 · 편집 안내 링크','편집 안내'],['editorLink','하단 · 콘텐츠 편집 링크','콘텐츠 편집'],['enlarge','이미지 확대 버튼','크게 보기']
     ],
     home: [
@@ -20,6 +29,9 @@
     ]
   };
   const sections = {
+    members:[['heading','페이지 상단 제목 영역'],['current','현재 구성원'],['alumni','졸업자 목록'],['contact','하단 문의 영역']],
+    publications:[['heading','페이지 상단 제목 영역'],['profiles','교수님 연구자 프로필 링크'],['papers','논문 목록'],['contact','하단 문의 영역']],
+    gallery:[['heading','페이지 상단 제목 영역'],['photos','활동 사진'],['contact','하단 문의 영역']],
     common:[['utility','상단 보조 정보줄'],['footer','하단 정보']],
     home:[['hero','첫 화면 메인 영역'],['about','연구실 소개'],['research','연구분야 미리보기'],['approach','연구 과정'],['highlights','주요 연구 목록'],['professor','교수님 소개 카드'],['contact','하단 문의 영역']],
     research:[['heading','페이지 상단 제목 영역'],['research','연구분야 목록'],['resources','연구자료 목록'],['contact','하단 문의 영역']],
@@ -36,6 +48,8 @@
       if(group!=='common') data.blocks[group] ||= [];
     }
     if(!Array.isArray(data.methodSteps))data.methodSteps=JSON.parse(JSON.stringify(steps));
+    for(const key of ['members','alumni','publications','gallery'])if(!Array.isArray(data[key]))data[key]=[];
+    if(!Array.isArray(data.professor.links))data.professor.links=[{label:'Google Scholar',url:''},{label:'ResearchGate',url:''}];
     return data;
   }
   window.LAB_MODEL={fields,sections,normalize};
