@@ -14,7 +14,7 @@
   const txt=(tag,value,cl='',key='')=>has(value)?`<${tag}${cl?` class="${cl}"`:''}${attr(key)}>${nl(value)}</${tag}>`:'';
   const cp=(tag,key,cl='')=>txt(tag,p[key],cl,path(key));
   const cc=(tag,key,cl='')=>txt(tag,c[key],cl,common(key));
-  const link=(url,hash='')=>url+(isDraft?'?preview=1':'')+hash;
+  const link=(url,hash='')=>{const query=new URLSearchParams();if(isDraft)query.set('preview','1');if(location.origin==='https://eyessunny0910.github.io')query.set('v',document.documentElement.dataset.build||'flexible');return url+(query.size?'?'+query:'')+hash;};
   const arrow='<span aria-hidden="true">↗</span>';
   const plant='<svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M22 39V17m0 12C9 30 7 17 7 17s16-1 15 12Zm0-11C22 5 37 6 37 6s1 14-15 12Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const image=(src,alt='',cl='',loading='lazy',key='')=>safeURL(src)?`<img class="${cl}" src="${safeURL(src)}" alt="${esc(alt)}" loading="${loading}" decoding="async"${attr(key)}>`:'';
