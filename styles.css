@@ -20,3 +20,21 @@
 /* Larger member degree/position labels, still smaller than names. */
 .member-role{font-size:14px;font-weight:600;line-height:1.45;padding:5px 10px}
 @media(max-width:580px){.member-role{font-size:12px;padding:4px 8px}}
+
+/* Multiple independent image sizes inside each research image box. */
+.research-media-panel{display:flex;flex-wrap:wrap;align-items:flex-start;align-content:flex-start;gap:9px;padding:14px;min-height:280px;min-width:0;max-width:100%;background:#fff;border:1px solid #e2e8df}
+.research-media-tile{display:flex;flex-direction:column;align-items:center;flex:0 1 calc(var(--tile-width) - 9px);min-width:0;max-width:100%;background:#f1f3ee;border:0;padding:0;overflow:hidden;cursor:zoom-in}
+.research-media-tile:hover,.research-media-tile:focus-visible{background:#e7eee3}
+.research-media-image{display:flex;align-items:center;justify-content:center;width:100%;min-height:120px;max-height:300px;overflow:hidden}
+.research-media-image img{display:block;width:100%;height:auto;max-height:290px;object-fit:contain}
+.research-media-caption{width:100%;padding:6px 9px;font-size:10px;line-height:1.5;color:var(--muted);text-align:center}
+.research-papers{margin-top:28px;border-top:1px solid var(--line);padding-top:18px}
+.research-papers h3{font-size:15px;line-height:1.4;font-weight:650}
+.research-papers h3 span{font:italic 12px Georgia,serif;color:var(--muted);margin-left:8px}
+.research-papers ul{list-style:none;margin:12px 0 0;padding:0}
+.research-paper{display:grid;grid-template-columns:13px 1fr;align-items:start;gap:10px;padding:8px 0;line-height:1.6;font-size:12px}
+.research-paper-icon{color:#829a7c}
+.research-paper a{border-bottom:1px solid #c3d3bf;overflow-wrap:anywhere}
+.research-paper a:hover{border-bottom-color:var(--forest)}
+.research-paper small{display:block;font-size:10px;line-height:1.5;color:var(--muted);margin-top:3px}
+@media(max-width:580px){.research-media-panel{padding:9px;gap:7px;min-height:180px}.research-media-tile{flex-basis:calc(var(--tile-width) - 7px)}.research-media-image{min-height:90px;max-height:240px}.research-media-image img{max-height:225px}}
