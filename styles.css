@@ -33,3 +33,7 @@
 @media(max-width:800px){.member-tier .members-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.members-tiers{gap:38px}}
 @media(max-width:580px){.member-tier-heading{gap:10px}.member-tier-titles h3{font-size:20px}.member-tier-titles>span{font-size:11px}.member-tier .members-grid{gap:27px 16px}.member-name-row h4{font-size:19px}}
 @media(max-width:420px){.member-tier .members-grid{grid-template-columns:1fr}.member-tier .member-card{max-width:300px}.member-tier-heading{flex-wrap:wrap}.member-tier-count{margin-left:0}}
+
+/* Larger member degree/position labels, still smaller than names. */
+.member-role{font-size:14px;font-weight:600;line-height:1.45;padding:5px 10px}
+@media(max-width:580px){.member-role{font-size:12px;padding:4px 8px}}
