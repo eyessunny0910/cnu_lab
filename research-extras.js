@@ -19,7 +19,7 @@ const arr=Array.isArray(r.papers)?r.papers:[];
 const papers=arr.map((v,i)=>({p:v||{},i})).filter(({p})=>has(p.title)||has(p.url));
 if(!papers.length)return "";
 return '<section class="research-papers"><h3>관련 논문 <span>Related publications</span></h3><ul>'+papers.map(({p,i})=>{
-const key='research.'+index+'.papers.'+i+'.',url=http(p.url)||(String(p.doi||"").startsWith("10.")?'https://doi.org/'+esc(encodeURI(p.doi)):"");
+const key='research.'+index+'.papers.'+i+'.',raw=String(p.url||"").trim(),url=http(raw)||(raw.startsWith("10.")?"https://doi.org/"+esc(encodeURI(raw)):"")||(String(p.doi||"").startsWith("10.")?"https://doi.org/"+esc(encodeURI(p.doi)):"");
 const title=esc(p.title||"논문 보기");return '<li class="research-paper"><span class="research-paper-icon" aria-hidden="true">↗</span><div>'+(url?'<a href="'+url+'" target="_blank" rel="noopener noreferrer"'+attr(key+'url')+'>'+title+'</a>':'<span'+attr(key+'title')+'>'+title+'</span>')+([p.authors,p.year].some(has)?'<small>'+esc([p.authors,p.year].filter(has).join(" · "))+'</small>':'')+'</div></li>';
 }).join("")+'</ul></section>';
 }
