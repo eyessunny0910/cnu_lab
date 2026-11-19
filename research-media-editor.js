@@ -6,7 +6,8 @@ const clone=o=>JSON.parse(JSON.stringify(o));
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const allowedSrc=s=>/^(?:https?:\/\/|assets\/|media\/|data:image\/(?:png|jpeg|webp);base64,)/i.test(String(s||"").trim());
 const srcOf=s=>{const v=String(s||"").trim();return !allowedSrc(v)?"":v.startsWith("media/")?(window.LAB_MEDIA_BASE||"")+v:v;};
-const validLink=s=>/^https?:\/\//i.test(String(s||"").trim());
+const validLink=s=>/^(https?:\/\/|10\.)/i.test(String(s||"").trim());
+const paperURL=s=>{const v=String(s||"").trim();return v.startsWith("10.")?"https://doi.org/"+v:v;};
 const clamp=v=>{const n=Number(v);return Number.isFinite(n)?Math.max(25,Math.min(100,Math.round(n))):100;};
 let data=clone(window.LAB_DATA),active=0,dirty=false,revision=window.LAB_REVISION;
 const original=clone(data);
@@ -57,7 +58,7 @@ function updatePreview(){
  $("preview-research-name").textContent=r.title||r.category||"선택한 연구";
  const photos=r.images.filter(x=>x&&allowedSrc(x.src));
  $("preview-images").innerHTML=photos.length?photos.map(x=>'<figure class="rm-image-preview" style="--w:'+clamp(x.width)+'%"><img src="'+esc(srcOf(x.src))+'" alt="'+esc(x.alt||"연구 사진")+'">'+(x.caption?'<figcaption>'+esc(x.caption)+'</figcaption>':"")+'</figure>').join(""):'<p class="rm-muted">사진을 추가하면 여기에 나타납니다.</p>';
- $("preview-papers").innerHTML=r.papers.filter(p=>p&&(p.title||p.url)).map(p=>'<li>'+(validLink(p.url)?'<a href="'+esc(p.url)+'" target="_blank" rel="noopener noreferrer">'+esc(p.title||"논문 보기")+"</a>":esc(p.title||"논문 링크를 입력하세요"))+(p.year?' <small>('+esc(p.year)+')</small>':"")+'</li>').join("")||'<li class="rm-muted">등록된 관련 논문이 없습니다.</li>';
+ $("preview-papers").innerHTML=r.papers.filter(p=>p&&(p.title||p.url)).map(p=>'<li>'+(validLink(p.url)?'<a href="'+esc(paperURL(p.url))+'" target="_blank" rel="noopener noreferrer">'+esc(p.title||"논문 보기")+"</a>":esc(p.title||"논문 링크를 입력하세요"))+(p.year?' <small>('+esc(p.year)+')</small>':"")+'</li>').join("")||'<li class="rm-muted">등록된 관련 논문이 없습니다.</li>';
 }
 $("research-choice").addEventListener("change",e=>{active=Number(e.target.value)||0;render();});
 $("research-reload").addEventListener("click",()=>{if(!dirty||confirm("저장하지 않은 수정사항이 사라집니다. 최신 데이터를 다시 불러올까요?"))location.reload();});
