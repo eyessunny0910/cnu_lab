@@ -1,9 +1,22 @@
 (function(){
   const has=s=>typeof s==='string'&&!!s.trim();
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const web=s=>/^https?:\/\//i.test(String(s))?esc(s):'';
+  const web=s=>{const value=String(s??'').trim();return /^https?:\/\//i.test(value)?esc(value):/^(?:[a-z0-9-]+\.)+[a-z]{2,}(?:[/?#]|$)/i.test(value)?esc('https://'+value):'';};
   const silhouette='<svg class="person-silhouette" viewBox="0 0 240 280" role="img" aria-label="사진 미등록 · 기본 인물 이미지"><rect width="240" height="280" fill="#fff"/><circle cx="120" cy="103" r="42" fill="#e8ece8"/><path d="M38 269v-34c0-48 37-83 82-83s82 35 82 83v34" fill="#e8ece8"/></svg>';
-  function profileLinks(data,attr){return (data.professor.links||[]).map((r,i)=>has(r.label)&&web(r.url)?`<a class="academic-link" href="${web(r.url)}" target="_blank" rel="noopener noreferrer"${attr('professor.links.'+i+'.url')}>${esc(r.label)} <span aria-hidden="true">↗</span></a>`:'').join('');}
+
+  function profileLinks(data,attr){
+    const f=data.professor||{},entries=Array.isArray(f.links)?f.links:[],name=String(f.nameEn||f.name||'').trim();
+    const query=[name,data.site?.university==='충남대학교'?'Chungnam National University':data.site?.university].filter(has).join(' ');
+    return entries.map((r,i)=>{
+      const label=String(r?.label??'').trim();
+      if(!label)return '';
+      let url=web(r?.url),isSearch=false;
+      if(!url&&/google\s*scholar|구글\s*스칼라|학술\s*검색/i.test(label)){url='https://scholar.google.com/scholar?q='+encodeURIComponent(query);isSearch=true;}
+      if(!url&&/research\s*gate|리서치\s*게이트/i.test(label)){url='https://www.researchgate.net/search/researcher?q='+encodeURIComponent(name);isSearch=true;}
+      if(!url)return '';
+      return `<a class="academic-link" href="${url}" target="_blank" rel="noopener noreferrer"${attr('professor.links.'+i+'.url')}${isSearch?' title="프로필 주소가 없어 연구자 검색 결과를 엽니다"':''}>${esc(label)}${isSearch?'<small class="profile-search-hint">연구자 검색</small>':''} <span aria-hidden="true">↗</span></a>`;
+    }).join('');
+  }
   const yearOf=value=>(String(value).match(/^\s*(\d{4})/)||[])[1]||'';
   function render(ctx){
     const {d,page,p,visible,attr,txt,cp,top,pageTop,image}=ctx;
@@ -12,7 +25,27 @@
     if(page==='members'){
       if(visible(page,'current')){
         const members=d.members.map((r,i)=>({r,i})).filter(({r})=>[r.name,r.nameEn,r.role,r.image,r.intro,r.email,r.affiliation].some(has));
-        html+=`<section class="section members-section"><div class="container">${top('',p.currentTitle,'','','copy.members.currentTitle')}${members.length?`<div class="members-grid">${members.map(({r,i})=>{const k='members.'+i+'.';return `<article class="member-card"><div class="member-photo"${attr(k+'image')}>${has(r.image)?image(r.image,r.name||r.nameEn,'','lazy',k+'image'):silhouette}</div><div class="member-copy"><div class="member-name-row">${web(r.link)&&has(r.name)?`<h3><a href="${web(r.link)}" target="_blank" rel="noopener noreferrer"${attr(k+'name')}>${esc(r.name)}</a></h3>`:txt('h3',r.name,'',k+'name')}${txt('span',r.role,'member-role',k+'role')}</div>${txt('p',r.nameEn,'member-name-en',k+'nameEn')}${txt('p',r.affiliation,'member-affiliation',k+'affiliation')}${txt('p',r.intro,'member-intro',k+'intro')}${txt('p',r.period,'member-period',k+'period')}${has(r.email)?`<a class="member-email" href="mailto:${esc(r.email)}"${attr(k+'email')}>${esc(r.email)}</a>`:''}</div></article>`;}).join('')}</div>`:empty('empty')}</div></section>`;
+        const memberGroup=r=>{
+          const value=String(r.group||r.level||r.role||'').trim().toLowerCase();
+          if(/박사후|석사후|post[\s-]?doc|postdoctoral|post[\s-]?master|^(staff|researchers?)$/.test(value))return 'staff';
+          if(/학부|undergrad|bachelor/.test(value))return 'undergrad';
+          if(/석사|master|m\.?s\.?|m\.?sc|graduate\s*student/.test(value))return 'master';
+          if(/연구원|연구직|researcher|research\s+(associate|fellow|staff|assistant)/.test(value))return 'staff';
+          return 'other';
+        };
+        const memberCard=({r,i})=>{const k='members.'+i+'.';return `<article class="member-card"><div class="member-photo"${attr(k+'image')}>${has(r.image)?image(r.image,r.name||r.nameEn,'','lazy',k+'image'):silhouette}</div><div class="member-copy"><div class="member-name-row">${web(r.link)&&has(r.name)?`<h4><a href="${web(r.link)}" target="_blank" rel="noopener noreferrer"${attr(k+'name')}>${esc(r.name)}</a></h4>`:txt('h4',r.name,'',k+'name')}${txt('span',r.role,'member-role',k+'role')}</div>${txt('p',r.nameEn,'member-name-en',k+'nameEn')}${txt('p',r.affiliation,'member-affiliation',k+'affiliation')}${txt('p',r.intro,'member-intro',k+'intro')}${txt('p',r.period,'member-period',k+'period')}${has(r.email)?`<a class="member-email" href="mailto:${esc(r.email)}"${attr(k+'email')}>${esc(r.email)}</a>`:''}</div></article>`;};
+        const tiers=[
+          {key:'staff',number:'01',label:'연구원',english:'Research staff'},
+          {key:'master',number:'02',label:'석사과정',english:"Master's students"},
+          {key:'undergrad',number:'03',label:'학부연구생',english:'Undergraduate researchers'},
+          {key:'other',number:'04',label:'기타 구성원',english:'Other members'}
+        ];
+        const tierHTML=tiers.map(g=>{
+          const items=members.filter(({r})=>memberGroup(r)===g.key);
+          if(!items.length)return '';
+          return `<section class="member-tier member-tier-${g.key}" aria-label="${g.label}"><div class="member-tier-heading"><span class="member-tier-number" aria-hidden="true">${g.number}</span><div class="member-tier-titles"><h3>${g.label}</h3><span>${g.english}</span></div><span class="member-tier-count">${items.length} PEOPLE</span></div><div class="members-grid">${items.map(memberCard).join('')}</div></section>`;
+        }).join('');
+        html+=`<section class="section members-section"><div class="container">${top('',p.currentTitle,'','','copy.members.currentTitle')}${members.length?`<div class="members-tiers">${tierHTML}</div>`:empty('empty')}</div></section>`;
       }
       if(visible(page,'alumni')){
         const rows=d.alumni.map((r,i)=>({r,i})).filter(({r})=>[r.name,r.nameEn,r.role,r.period,r.affiliation].some(has));
