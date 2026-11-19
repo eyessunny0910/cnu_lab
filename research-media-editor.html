@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>연구 사진·논문 편집 도구 · CGBL</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css?v=research-20261119a">
+<style>
+.rm-page{background:#f7f7f0;min-height:100vh;color:#173b32}
+.rm-header{background:#173b32;color:#fff;padding:20px 0}
+.rm-header .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.rm-header strong{font-size:20px}.rm-header nav{display:flex;gap:24px;font-size:12px}.rm-header a:hover{text-decoration:underline}
+.rm-main{padding:45px 0 90px}.rm-eyebrow{letter-spacing:.13em;text-transform:uppercase;font-size:10px;color:#67826c}
+.rm-title{font-size:32px;margin:10px 0}.rm-lead{font-size:13px;line-height:2;color:#64736a;max-width:800px}
+.rm-alert{border:1px solid #e3dbbd;background:#fff9e8;padding:18px 21px;color:#625b3d;font-size:12px;margin:22px 0 30px;line-height:1.9}
+.rm-alert strong{display:block;font-size:14px;color:#4b4d35;margin-bottom:5px}.rm-alert a{text-decoration:underline}
+.rm-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:25px 0}
+.rm-toolbar label{font-weight:600;font-size:13px}.rm-toolbar select{flex:1;min-width:190px}
+.rm-toolbar select,.rm-field input,.rm-toolbar button,.rm-actions button,.rm-actions a{border:1px solid #c5d3c4;background:#fff;padding:10px 14px;color:#173b32}
+.rm-toolbar button,.rm-actions button,.rm-actions a{cursor:pointer;white-space:nowrap}
+.rm-actions .rm-dark{background:#173b32;color:#fff;border-color:#173b32}
+.rm-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,440px);align-items:start;gap:26px}
+.rm-editor{display:flex;flex-direction:column;gap:27px;min-width:0}
+.rm-panel{background:#fff;border:1px solid #dce2d7;padding:26px;min-width:0}
+.rm-panel h2{font-size:20px;margin:0 0 8px}.rm-panel p{font-size:12px;color:#64736a;margin:0 0 20px}
+.rm-record{background:#f6f8f3;border:1px solid #dce2d7;margin-top:15px;padding:16px}
+.rm-record-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.rm-record-head strong{font-size:13px}.rm-record-head button{background:transparent;border:0;color:#8e483b;text-decoration:underline;cursor:pointer;font-size:11px}
+.rm-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.rm-field{display:block;margin:12px 0;font-size:12px;color:#536954}
+.rm-field span{display:block;margin:0 0 5px;font-size:11px;font-weight:650}
+.rm-field input[type=text],.rm-field input[type=url]{width:100%;min-width:0;font-size:12px;line-height:1.5}
+.rm-field input[type=range]{width:calc(100% - 70px);vertical-align:middle}
+.rm-field input[type=file]{border:1px dashed #c5d3c4;background:#fff;padding:10px;width:100%;max-width:100%;font-size:11px}
+.rm-field output{font-size:12px;color:#173b32;margin-left:9px}
+.rm-buttons{display:flex;gap:5px}.rm-buttons button{border:1px solid #c5d3c4;background:#fff;font-size:11px;padding:3px 9px;cursor:pointer}
+.rm-add{display:block;width:100%;padding:13px;background:#edf2ea;border:1px dashed #9eb69a;margin-top:17px;color:#173b32;cursor:pointer}
+.rm-preview{position:sticky;top:22px;background:#fff;border:1px solid #dce2d7;padding:24px;min-width:0}
+.rm-preview h2{font-size:19px;margin-bottom:12px}
+.rm-preview p{font-size:12px;color:#64736a;line-height:1.8}
+.rm-media-preview{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px;background:#f2f4ee;padding:10px;min-height:260px;margin:12px 0}
+.rm-image-preview{flex:0 1 calc(var(--w) - 8px);min-width:0;max-width:100%;background:#fff;text-align:center}
+.rm-image-preview img{display:block;width:100%;height:auto;max-height:230px;object-fit:contain}
+.rm-image-preview figcaption{padding:5px;color:#64736a;font-size:10px;overflow-wrap:anywhere}
+.rm-paper-preview{list-style:none;margin:10px 0;padding:0}.rm-paper-preview li{font-size:12px;padding:7px 0;border-bottom:1px solid #e2e8df}.rm-paper-preview a{text-decoration:underline}
+.rm-actions{margin-top:30px;border-top:1px solid #dce2d7;padding-top:25px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.rm-status{color:#64736a;font-size:12px;margin-top:12px;line-height:1.7}
+.rm-muted{font-size:11px;color:#64736a;line-height:1.8}
+@media(max-width:900px){.rm-layout{grid-template-columns:1fr}.rm-preview{position:static}.rm-main{padding-top:30px}}
+@media(max-width:580px){.rm-header nav{display:flex!important;position:static!important;box-shadow:none!important;background:transparent!important;padding:0!important;gap:12px!important}.rm-header nav a{font-size:11px!important;color:#fff!important}.rm-panel{padding:16px}.rm-preview{padding:16px}.rm-title{font-size:27px}.container{width:calc(100% - 34px)}}
+</style>
+<script src="data.js?v=11a67d672baf" defer></script>
+<script src="content-client.js?v=d268e47e755e" defer></script>
+<script src="research-media-editor.js?v=20261119a" defer></script>
+</head>
+<body class="rm-page">
+<header class="rm-header"><div class="container"><strong>CGBL <small> / RESEARCH EDITOR</small></strong><nav aria-label="바로가기"><a href="research.html">연구분야 보기</a><a href="editor.html" target="_blank" rel="noopener">기존 콘텐츠 편집기</a></nav></div></header>
+<main class="container rm-main">
+<p class="rm-eyebrow">RESEARCH IMAGES & PUBLICATIONS</p>
+<h1 class="rm-title">연구별 사진 · 논문 편집</h1>
+<p class="rm-lead">연구 하나당 사진 여러 장을 추가하고 각 사진의 폭을 조절하세요. 관련 논문도 제목과 링크로 등록할 수 있습니다. 사진을 누르면 홈페이지에서 크게 볼 수 있습니다.</p>
+<div class="rm-alert"><strong>중요: 이 화면은 편집 보조 도구이며 자동 저장되지는 않습니다.</strong>원하는 내용을 편집한 후 <b>① 변경 내용 JSON 다운로드 → ② 기존 콘텐츠 편집기에서 ‘백업 불러오기’ → ③ 저장 완료 확인</b> 순서로 적용하세요. 기존 편집기에 직접 연결할 수 없는 환경에서 사용할 수 있는 방법입니다. 백업 불러오기는 전체 콘텐츠를 갱신하므로 다른 사람과 동시에 수정 중이라면 주의해 주세요.</div>
+<div class="rm-toolbar"><label for="research-choice">편집할 연구</label><select id="research-choice" aria-label="연구 선택"></select><button id="research-reload" type="button">최신 내용 다시 읽기</button></div>
+<div class="rm-layout"><div class="rm-editor">
+<section class="rm-panel"><h2>연구 이미지</h2><p>사진을 추가하고 25–100%에서 가로 크기를 조절하세요. 사진은 자동으로 줄바꿈되어 같은 사각형 영역에 모입니다.</p><div id="image-fields"></div><button type="button" class="rm-add" id="add-image">+ 사진 추가</button></section>
+<section class="rm-panel"><h2>관련 논문</h2><p>논문 제목과 DOI 또는 링크를 입력하세요. 연구별로 별도 목록이 생성됩니다.</p><div id="paper-fields"></div><button type="button" class="rm-add" id="add-paper">+ 관련 논문 추가</button></section>
+</div><aside class="rm-preview"><h2>현재 연구 미리보기</h2><p id="preview-research-name"></p><div class="rm-media-preview" id="preview-images"></div><h3 style="font-size:15px">관련 논문</h3><ul class="rm-paper-preview" id="preview-papers"></ul><p class="rm-muted">이미지 영역은 사진을 추가하는 만큼 세로로 확장됩니다. 실제 사이트의 다른 연구 내용은 변경되지 않습니다.</p></aside></div>
+<div class="rm-actions"><button id="export-backup" type="button" class="rm-dark">① 변경 내용 JSON 다운로드 ↓</button><a href="editor.html" target="_blank" rel="noopener">② 기존 편집기 열기 ↗</a><label class="rm-muted" for="import-backup">기존 백업에서 작업하려면 <input id="import-backup" type="file" accept=".json,application/json"></label></div>
+<p role="status" aria-live="polite" class="rm-status" id="editor-status">데이터 불러오는 중…</p>
+</main></body></html>
