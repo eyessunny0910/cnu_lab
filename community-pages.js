@@ -25,27 +25,9 @@
     if(page==='members'){
       if(visible(page,'current')){
         const members=d.members.map((r,i)=>({r,i})).filter(({r})=>[r.name,r.nameEn,r.role,r.image,r.intro,r.email,r.affiliation].some(has));
-        const memberGroup=r=>{
-          const value=String(r.group||r.level||r.role||'').trim().toLowerCase();
-          if(/박사후|석사후|post[\s-]?doc|postdoctoral|post[\s-]?master|^(staff|researchers?)$/.test(value))return 'staff';
-          if(/학부|undergrad|bachelor/.test(value))return 'undergrad';
-          if(/석사|master|m\.?s\.?|m\.?sc|graduate\s*student/.test(value))return 'master';
-          if(/연구원|연구직|researcher|research\s+(associate|fellow|staff|assistant)/.test(value))return 'staff';
-          return 'other';
-        };
+        // Keep the editor's ordering; all current members share a single list.
         const memberCard=({r,i})=>{const k='members.'+i+'.';return `<article class="member-card"><div class="member-photo"${attr(k+'image')}>${has(r.image)?image(r.image,r.name||r.nameEn,'','lazy',k+'image'):silhouette}</div><div class="member-copy"><div class="member-name-row">${web(r.link)&&has(r.name)?`<h4><a href="${web(r.link)}" target="_blank" rel="noopener noreferrer"${attr(k+'name')}>${esc(r.name)}</a></h4>`:txt('h4',r.name,'',k+'name')}${txt('span',r.role,'member-role',k+'role')}</div>${txt('p',r.nameEn,'member-name-en',k+'nameEn')}${txt('p',r.affiliation,'member-affiliation',k+'affiliation')}${txt('p',r.intro,'member-intro',k+'intro')}${txt('p',r.period,'member-period',k+'period')}${has(r.email)?`<a class="member-email" href="mailto:${esc(r.email)}"${attr(k+'email')}>${esc(r.email)}</a>`:''}</div></article>`;};
-        const tiers=[
-          {key:'staff',number:'01',label:'연구원',english:'Research staff'},
-          {key:'master',number:'02',label:'석사과정',english:"Master's students"},
-          {key:'undergrad',number:'03',label:'학부연구생',english:'Undergraduate researchers'},
-          {key:'other',number:'04',label:'기타 구성원',english:'Other members'}
-        ];
-        const tierHTML=tiers.map(g=>{
-          const items=members.filter(({r})=>memberGroup(r)===g.key);
-          if(!items.length)return '';
-          return `<section class="member-tier member-tier-${g.key}" aria-label="${g.label}"><div class="member-tier-heading"><span class="member-tier-number" aria-hidden="true">${g.number}</span><div class="member-tier-titles"><h3>${g.label}</h3><span>${g.english}</span></div><span class="member-tier-count">${items.length} PEOPLE</span></div><div class="members-grid">${items.map(memberCard).join('')}</div></section>`;
-        }).join('');
-        html+=`<section class="section members-section"><div class="container">${top('',p.currentTitle,'','','copy.members.currentTitle')}${members.length?`<div class="members-tiers">${tierHTML}</div>`:empty('empty')}</div></section>`;
+        html+=`<section class="section members-section"><div class="container">${top('',p.currentTitle,'','','copy.members.currentTitle')}${members.length?`<div class="members-grid">${members.map(memberCard).join('')}</div>`:empty('empty')}</div></section>`;
       }
       if(visible(page,'alumni')){
         const rows=d.alumni.map((r,i)=>({r,i})).filter(({r})=>[r.name,r.nameEn,r.role,r.period,r.affiliation].some(has));
